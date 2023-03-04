@@ -1,0 +1,3 @@
+# Network-automation
+トラフィックが95Gbps以上になったらBGPの経路広報を止める。
+トラフィックが90Gbps以下に戻ったらBGPの経路を再度広報する。
