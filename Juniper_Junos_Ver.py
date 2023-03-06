@@ -13,7 +13,7 @@ device = {
 # インターフェース名、しきい値、およびBGPネイバーのIPアドレスを設定
 interface = "対象のPNIのIF" 
 threshold = 100
-neighbor_ip = "192.168.1.2"  #BGPネイバーのIPアドレスを書き換えてください
+neighbor_ip = '192.168.1.2'  #BGPネイバーのIPアドレスを書き換えてください
 neighbor_as = "AS番号"  #AS番号を書き換えてください
 route-policy = "ルートポリシ" #ルートポリシを書き換えてください
 
