@@ -3,10 +3,10 @@ import time
 
 # デバイスへの接続情報を設定します
 device = {
-    'device_type': 'cisco_xr',
-    'ip': 'IPアドレス', #IPアドレスを書き換えてください
-    'username': 'ユーザ名', #ユーザ名を書き換えてください
-    'password': 'パスワード', #パスワードを書き換えてください
+    "device_type": "cisco_xr",
+    "ip": "IPアドレス", #IPアドレスを書き換えてください
+    "username": "ユーザ名", #ユーザ名を書き換えてください
+    "password": "パスワード", #パスワードを書き換えてください
 }
 
         
