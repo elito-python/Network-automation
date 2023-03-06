@@ -13,7 +13,7 @@ device = {
 show_interface_command = 'show interfaces ethernet eth0 | grep "RX rate\|TX rate"'
 
 # BGPネイバーのIPアドレスとAS番号を設定します
-neighbor_ip = 'IPアドレス'  # BGPネイバーのIPアドレスに置き換えてください
+neighbor_ip = 'IPアドレス'  # BGPネイバーのIPアドレスを書き換えてください
 neighbor_as = 'AS番号'  # BGPネイバーのAS番号に置き換えてください
 
 # 初期トラフィック値を設定します
