@@ -8,47 +8,49 @@ device = {
     'username': 'ユーザ名', #ユーザ名を書き換えてください
     'password': 'パスワード', #パスワードを書き換えてください
 }
+  
+        
+# インターフェース名、しきい値、およびBGPネイバーのIPアドレスを設定
+interface = "対象のPNIのIF" 
+threshold = 100
+neighbor_ip = "IPアドレス"  #BGPネイバーのIPアドレスを書き換えてください
+neighbor_as = "AS番号"  #AS番号を書き換えてください
+route-policy = "ルートポリシ" #ルートポリシを書き換えてください
 
-# IFの監視対象となるIF名
-interface = '対象のPNIのIF' 
+# 経路の広報を停止する関数
+def stop_bgp_advertising():
+    net_connect = ConnectHandler(**device)
+    net_connect.send_command("configure")
+    net_connect.send_command("set policy-options policy-statement "+ route-policy +" term 1 from protocol bgp)
+    net_connect.send_command("set policy-options policy-statement "+ route-policy +" term 1 then reject)
+    net_connect.send_command("commit")
+    net_connect.send_command("exit")
+    net_connect.disconnect()
 
-# 監視間隔（秒）
-monitor_interval = 60
+# 経路の広報を再開する関数
+def start_bgp_advertising():
+    net_connect = ConnectHandler(**device)
+    net_connect.send_command("configure")
+    net_connect.send_command("delete policy-options policy-statement "+ route-policy +" term 1 from protocol bgp)
+    net_connect.send_command("delete policy-options policy-statement "+ route-policy +" term 1 then reject)
+    net_connect.send_command("commit")
+    net_connect.send_command("exit")
+    net_connect.disconnect()
 
-# BGP広報用のポリシー名
-bgp_policy_name = 'my-policy'
-
-# ポリシーに設定する条件（トラフィック量）
-traffic_threshold = 100000000
-
-# Netmikoを使用してJuniper Junosデバイスに接続する
-with ConnectHandler(**device) as net_connect:
-    while True:
-        # IFの統計情報を取得する
-        output = net_connect.send_command(f'show interfaces {interface} extensive')
-
-        # 統計情報からIFのトラフィック情報を抽出する
-        for line in output.splitlines():
-            if 'Input rate' in line:
-                input_rate = int(line.split()[-2])
-            elif 'Output rate' in line:
-                output_rate = int(line.split()[-2])
-
-        # IFのトラフィックが指定の閾値を超えた場合
-        if input_rate > traffic_threshold or output_rate > traffic_threshold:
-            # BGPのポリシーを変更して広報するルートをフィルタリングする
-            net_connect.send_config_set([
-                f'set policy-options policy-statement {bgp_policy_name} term 1 from protocol bgp',
-                'set policy-options policy-statement {} term 1 then reject'.format(bgp_policy_name),
-                'commit'
-            ])
-        # トラフィックが閾値以下に戻った場合
-        elif input_rate <= traffic_threshold and output_rate <= traffic_threshold:
-            # BGPのポリシーを変更してフィルタリングを解除する
-            net_connect.send_config_set([
-                f'delete policy-options policy-statement {bgp_policy_name}',
-                'commit'
-            ])
-
-        # 監視間隔だけスリープする
-        time.sleep(monitor_interval)
+while True:
+    # トラフィック量を取得
+    net_connect = ConnectHandler(**device)
+    output = net_connect.send_command("show interfaces "+ interface +" extensive")
+    net_connect.disconnect()
+    traffic = int(output.split()[-2])
+    
+    # トラフィックが閾値を超えている場合は経路広報を停止
+    if traffic > threshold:
+        stop_bgp_advertising()
+    
+    # トラフィックが閾値以下になった場合は経路広報を再開
+    if traffic <= threshold * 0.9:
+        start_bgp_advertising()
+    
+    # 5秒間待機してループを再開
+    time.sleep(5)
