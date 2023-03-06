@@ -3,17 +3,17 @@ import time
 
 # デバイスへの接続情報を設定します
 device = {
-    'device_type': 'juniper_junos', 
-    'ip': 'IPアドレス', #IPアドレスを書き換えてください
-    'username': 'ユーザ名', #ユーザ名を書き換えてください
-    'password': 'パスワード', #パスワードを書き換えてください
+    "device_type": "juniper_junos", 
+    "ip": "192.168.1.1", #IPアドレスを書き換えてください
+    "username": "admin", #ユーザ名を書き換えてください
+    "password": "password", #パスワードを書き換えてください
 }
   
         
 # インターフェース名、しきい値、およびBGPネイバーのIPアドレスを設定
 interface = "対象のPNIのIF" 
 threshold = 100
-neighbor_ip = "IPアドレス"  #BGPネイバーのIPアドレスを書き換えてください
+neighbor_ip = "192.168.1.2"  #BGPネイバーのIPアドレスを書き換えてください
 neighbor_as = "AS番号"  #AS番号を書き換えてください
 route-policy = "ルートポリシ" #ルートポリシを書き換えてください
 
