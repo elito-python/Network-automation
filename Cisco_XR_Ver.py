@@ -9,49 +9,48 @@ device = {
     'password': 'パスワード', #パスワードを書き換えてください
 }
 
-# BGP neighborを設定
-neighbor_ip = '192.168.0.2'  # BGP neighborのIPアドレスを設定
+        
+# インターフェース名、しきい値、およびBGPネイバーのIPアドレスを設定
+interface = "対象のPNIのIF" 
+threshold = 100
+# BGPネイバーのIPアドレスとAS番号を設定します
+neighbor_ip = "IPアドレス"  # BGPネイバーのIPアドレスを書き換えてください
+neighbor_as = "AS番号"  # BGPネイバーのAS番号に置き換えてください
 
-# しきい値を設定
-threshold = 100  # トラフィックのしきい値をMbpsで設定
-recovery_threshold = 90  # トラフィックが戻ったと判定するしきい値をMbpsで設定
+# 経路の広報を停止する関数
+def stop_bgp_advertising():
+    net_connect = ConnectHandler(**device)
+    net_connect.send_command("conf t")
+    net_connect.send_command("router bgp "+ neighbor_as)
+    net_connect.send_command("neighbor "+ neighbor_ip +" route-policy "+ BLOCK-NEIGHBOR +" "out")
+    net_connect.send_command("commit")
+    net_connect.send_command("end")
+    net_connect.disconnect()
 
-# netmikoを使用してデバイスに接続
-with ConnectHandler(**device) as net_connect:
-    # 無限ループを開始
-    while True:
-        # インターフェースの情報を取得
-        output = net_connect.send_command('show interface GigabitEthernet0/0/0/0')
-        
-        # トラフィックの情報を取得
-        for line in output.splitlines():
-            if 'input rate' in line:
-                input_rate = int(line.split()[2])
-                break
-        
-        # トラフィックがしきい値を超えた場合
-        if input_rate > threshold:
-            # 経路の広報を停止
-            config_commands = [
-                f'router bgp 65000',
-                f'neighbor {neighbor_ip} route-policy BLOCK-NEIGHBOR in',
-            ]
-            net_connect.send_config_set(config_commands)
-            print(f'{neighbor_ip}: Traffic exceeded the threshold ({input_rate} Mbps), blocking inbound routes.')
-        
-        # トラフィックが戻った場合
-        elif input_rate < recovery_threshold:
-            # 経路の広報を再開
-            config_commands = [
-                f'router bgp 65000',
-                f'no neighbor {neighbor_ip} route-policy BLOCK-NEIGHBOR in',
-            ]
-            net_connect.send_config_set(config_commands)
-            print(f'{neighbor_ip}: Traffic has returned to normal ({input_rate} Mbps), allowing inbound routes.')
-        
-        # しきい値を超えていない場合は何もしない
-        else:
-            print(f'{neighbor_ip}: Traffic is normal ({input_rate} Mbps).')
-        
-        # 10秒間待機してから再度トラフィックをチェック
-        time.sleep(10)
+# 経路の広報を再開する関数
+def start_bgp_advertising():
+    net_connect = ConnectHandler(**device)
+    net_connect.send_command("conf t")
+    net_connect.send_command("router bgp "+ neighbor_as)
+    net_connect.send_command("no neighbor "+ neighbor_ip +" route-policy "+ BLOCK-NEIGHBOR +" "out")
+    net_connect.send_command("commit")
+    net_connect.send_command("end")
+    net_connect.disconnect()
+
+while True:
+    # トラフィック量を取得
+    net_connect = ConnectHandler(**device)
+    output = net_connect.send_command("show interfaces "+ interface +" | include rate")
+    net_connect.disconnect()
+    traffic = int(output.split()[-2])
+    
+    # トラフィックが閾値を超えている場合は経路広報を停止
+    if traffic > threshold:
+        stop_bgp_advertising()
+    
+    # トラフィックが閾値以下になった場合は経路広報を再開
+    if traffic <= threshold * 0.9:
+        start_bgp_advertising()
+    
+    # 5秒間待機してループを再開
+    time.sleep(5)
