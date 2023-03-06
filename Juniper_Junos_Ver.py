@@ -40,7 +40,7 @@ def start_bgp_advertising():
 while True:
     # トラフィック量を取得
     net_connect = ConnectHandler(**device)
-    output = net_connect.send_command("show interfaces " + interface + " extensive")
+    output = net_connect.send_command("show interfaces " + interface + " extensive | match bps")
     net_connect.disconnect()
     traffic = int(output.split()[-2])
     
