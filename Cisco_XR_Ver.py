@@ -21,8 +21,8 @@ route-policy = "ルートポリシ" #ルートポリシを書き換えてくだ�
 def stop_bgp_advertising():
     net_connect = ConnectHandler(**device)
     net_connect.send_command("conf t")
-    net_connect.send_command("router bgp "+ neighbor_as)
-    net_connect.send_command("neighbor "+ neighbor_ip +" route-policy "+ route-policy +" "out")
+    net_connect.send_command("router bgp " + neighbor_as)
+    net_connect.send_command("neighbor " + neighbor_ip + " route-policy " + route-policy + " out")
     net_connect.send_command("commit")
     net_connect.send_command("end")
     net_connect.disconnect()
@@ -31,8 +31,8 @@ def stop_bgp_advertising():
 def start_bgp_advertising():
     net_connect = ConnectHandler(**device)
     net_connect.send_command("conf t")
-    net_connect.send_command("router bgp "+ neighbor_as)
-    net_connect.send_command("no neighbor "+ neighbor_ip +" route-policy "+ route-policy +" "out")
+    net_connect.send_command("router bgp " + neighbor_as)
+    net_connect.send_command("no neighbor " + neighbor_ip + " route-policy " + route-policy + " out")
     net_connect.send_command("commit")
     net_connect.send_command("end")
     net_connect.disconnect()
@@ -40,7 +40,7 @@ def start_bgp_advertising():
 while True:
     # トラフィック量を取得
     net_connect = ConnectHandler(**device)
-    output = net_connect.send_command("show interfaces "+ interface +" | include rate")
+    output = net_connect.send_command("show interfaces " + interface + " | include rate")
     net_connect.disconnect()
     traffic = int(output.split()[-2])
     
