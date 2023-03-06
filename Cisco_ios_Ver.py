@@ -12,7 +12,7 @@ device = {
 # インターフェース名、しきい値、およびBGPネイバーのIPアドレスを設定
 interface = "対象のPNIのIF" 
 threshold = 100
-bgp_neighbor = "IPアドレス" #とIPアドレスを書き換えてください
+bgp_neighbor = "IPアドレス" #IPアドレスを書き換えてください
 
 # 経路の広報を停止する関数
 def stop_bgp_advertising():
