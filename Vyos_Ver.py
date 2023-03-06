@@ -47,7 +47,7 @@ while True:
         elif current_traffic_value <= 90 and traffic_value > 90:
             config_commands = [
                 'configure',
-                'delete protocols bgp neighbor {} route-map STOP_TRAFFIC out'.format(neighbor_ip),
+                'delete protocols bgp neighbor {neighbor_as} route-map STOP_TRAFFIC out'.format(neighbor_ip),
                 'commit',
                 'exit'
             ]
