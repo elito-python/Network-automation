@@ -9,6 +9,7 @@ device = {
     "password": "パスワード", #パスワードを書き換えてください
 }
 
+
 # インターフェース名、しきい値、およびBGPネイバーのIPアドレスを設定
 interface = "対象のPNIのIF" 
 threshold = 100
