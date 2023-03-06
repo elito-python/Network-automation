@@ -9,53 +9,47 @@ device = {
     'password': 'パスワード', #パスワードを書き換えてください
 }
 
-# コマンドを定義します
-show_interface_command = 'show interfaces ethernet eth0 | grep 'RX rate\|TX rate''
-
+# インターフェース名、しきい値、およびBGPネイバーのIPアドレスを設定
+interface = '対象のPNIのIF' 
+threshold = 100
 # BGPネイバーのIPアドレスとAS番号を設定します
 neighbor_ip = 'IPアドレス'  # BGPネイバーのIPアドレスを書き換えてください
 neighbor_as = 'AS番号'  # BGPネイバーのAS番号に置き換えてください
 
-# 初期トラフィック値を設定します
-traffic_value = 0
+# 経路の広報を停止する関数
+def stop_bgp_advertising():
+    net_connect = ConnectHandler(**device)
+    net_connect.send_command('configure')
+    net_connect.send_command('set protocols bgp neighbor '+ neighbor_ip +' route-map STOP_TRAFFIC out')
+    net_connect.send_command('commit')
+    net_connect.send_command('save')
+    net_connect.send_command('exit')
+    net_connect.disconnect()
+
+# 経路の広報を再開する関数
+def start_bgp_advertising():
+    net_connect = ConnectHandler(**device)
+    net_connect.send_command('configure')
+    net_connect.send_command('delete protocols bgp neighbor '+ neighbor_ip +' route-map STOP_TRAFFIC out')
+    net_connect.send_command('commit')
+    net_connect.send_command('save')
+    net_connect.send_command('exit')
+    net_connect.disconnect()
 
 while True:
-    with ConnectHandler(**device) as ssh:
-        # インターフェースのトラフィック情報を取得します
-        output = ssh.send_command(show_interface_command)
-
-        # トラフィック情報から値を取得します
-        rx_value = int(output.split()[3])
-        tx_value = int(output.split()[7])
-        current_traffic_value = rx_value + tx_value
-
-        # トラフィックが100Mbpsを超えた場合はBGP広報経路を停止します
-        if current_traffic_value > 100 and traffic_value <= 100:
-            config_commands = [
-                'configure',
-                'set protocols bgp neighbor {} route-map STOP_TRAFFIC out'.format(neighbor_ip),
-                'commit',
-                'exit',
-                'set firewall name STOP_TRAFFIC default-action drop',
-                'commit',
-                'exit'
-            ]
-            ssh.send_config_set(config_commands)
-            print(f'Traffic exceeded 100Mbps, BGP route to {neighbor_ip} stopped')
-
-        # トラフィックが90Mbps以下に戻った場合はBGP広報経路を再度開始します
-        elif current_traffic_value <= 90 and traffic_value > 90:
-            config_commands = [
-                'configure',
-                'delete protocols bgp neighbor {neighbor_as} route-map STOP_TRAFFIC out'.format(neighbor_ip),
-                'commit',
-                'exit'
-            ]
-            ssh.send_config_set(config_commands)
-            print(f'Traffic dropped below 90Mbps, BGP route to {neighbor_ip} started')
-
-        # 現在のトラフィック値を更新します
-        traffic_value = current_traffic_value
-
-    # 10秒間スリープします
-    time.sleep(10)
+    # トラフィック量を取得
+    net_connect = ConnectHandler(**device)
+    output = net_connect.send_command('show interfaces ethernet '+ interface +' | match rate')
+    net_connect.disconnect()
+    traffic = int(output.split()[-2])
+    
+    # トラフィックが閾値を超えている場合は経路広報を停止
+    if traffic > threshold:
+        stop_bgp_advertising()
+    
+    # トラフィックが閾値以下になった場合は経路広報を再開
+    if traffic <= threshold * 0.9:
+        start_bgp_advertising()
+    
+    # 5秒間待機してループを再開
+    time.sleep(5)
