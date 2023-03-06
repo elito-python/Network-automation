@@ -21,8 +21,8 @@ route-policy = "ルートポリシ" #ルートポリシを書き換えてくだ�
 def stop_bgp_advertising():
     net_connect = ConnectHandler(**device)
     net_connect.send_command("configure")
-    net_connect.send_command("set policy-options policy-statement "+ route-policy +" term 1 from protocol bgp)
-    net_connect.send_command("set policy-options policy-statement "+ route-policy +" term 1 then reject)
+    net_connect.send_command("set policy-options policy-statement " + route-policy + " term 1 from protocol bgp)
+    net_connect.send_command("set policy-options policy-statement " + route-policy + " term 1 then reject)
     net_connect.send_command("commit")
     net_connect.send_command("exit")
     net_connect.disconnect()
@@ -31,8 +31,8 @@ def stop_bgp_advertising():
 def start_bgp_advertising():
     net_connect = ConnectHandler(**device)
     net_connect.send_command("configure")
-    net_connect.send_command("delete policy-options policy-statement "+ route-policy +" term 1 from protocol bgp)
-    net_connect.send_command("delete policy-options policy-statement "+ route-policy +" term 1 then reject)
+    net_connect.send_command("delete policy-options policy-statement " + route-policy + " term 1 from protocol bgp)
+    net_connect.send_command("delete policy-options policy-statement  "+ route-policy + " term 1 then reject)
     net_connect.send_command("commit")
     net_connect.send_command("exit")
     net_connect.disconnect()
@@ -40,7 +40,7 @@ def start_bgp_advertising():
 while True:
     # トラフィック量を取得
     net_connect = ConnectHandler(**device)
-    output = net_connect.send_command("show interfaces "+ interface +" extensive")
+    output = net_connect.send_command("show interfaces " + interface + " extensive")
     net_connect.disconnect()
     traffic = int(output.split()[-2])
     
