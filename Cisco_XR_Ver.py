@@ -19,7 +19,7 @@ allow_command = 'router bgp AS番号\n neighbor IPアドレス route-policy allo
 monitor_interval = 5
 
 # ネットワーク上のトラフィックレートのしきい値を設定します（Mbps単位）
-traffic_threshold = 90
+traffic_threshold = 100
 
 # Netmikoを使用してデバイスに接続します
 with ConnectHandler(**device) as net_connect:
