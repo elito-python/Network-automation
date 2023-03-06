@@ -1,16 +1,16 @@
 from netmiko import ConnectHandler
 import time
 
-# デバイス情報を設定します
+# デバイスへの接続情報を設定します
 device = {
     'device_type': 'vyos',
-    'ip': 'IPアドレス',  # VyOSデバイスのIPアドレスに置き換えてください
-    'username': 'username',  # ユーザー名に置き換えてください
-    'password': 'password',  # パスワードに置き換えてください
+    'ip': 'IPアドレス', #IPアドレスを書き換えてください
+    'username': 'ユーザ名', #ユーザ名を書き換えてください
+    'password': 'パスワード', #パスワードを書き換えてください
 }
 
 # コマンドを定義します
-show_interface_command = 'show interfaces ethernet eth0 | grep "RX rate\|TX rate"'
+show_interface_command = 'show interfaces ethernet eth0 | grep 'RX rate\|TX rate''
 
 # BGPネイバーのIPアドレスとAS番号を設定します
 neighbor_ip = 'IPアドレス'  # BGPネイバーのIPアドレスを書き換えてください
