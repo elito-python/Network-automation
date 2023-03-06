@@ -21,14 +21,14 @@ route-policy = "ルートポリシ" #ルートポリシを書き換えてくだ�
 def stop_bgp_advertising():
     net_connect = ConnectHandler(**device)
     net_connect.send_command("router bgp " + neighbor_as)
-    net_connect.send_command("neighbor " + neighbor_ip + " route-map " + route-policy + " in")
+    net_connect.send_command("neighbor " + neighbor_ip + " route-map " + route-policy + " out")
     net_connect.disconnect()
 
 # 経路の広報を再開する関数
 def start_bgp_advertising():
     net_connect = ConnectHandler(**device)
     net_connect.send_command("router bgp " + neighbor_as)
-    net_connect.send_command("no neighbor " + neighbor_ip + " route-map " + route-policy + " in")
+    net_connect.send_command("no neighbor " + neighbor_ip + " route-map " + route-policy + " out")
     net_connect.disconnect()
 
 while True:
