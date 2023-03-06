@@ -3,17 +3,17 @@ from netmiko import ConnectHandler
 
 # デバイスへの接続情報を設定します
 device = {
-    'device_type': 'cisco_xr',
-    'ip': 'IPアドレス',
-    'username': 'ユーザー名',
-    'password': 'パスワード',
+    'device_type': 'cisco_xr',　
+    'ip': 'IPアドレス', #IPアドレスを書き換えてください
+    'username': 'ユーザー名', #ユーザ名を書き換えてください
+    'password': 'パスワード', #パスワードを書き換えてください
 }
 
 # BGP経路をdenyするためのコマンドを設定します
-deny_command = 'router bgp AS番号\n neighbor IPアドレス route-policy deny_traffic out\n'
+deny_command = 'router bgp AS番号\n neighbor IPアドレス route-policy deny_traffic out\n' #AS番号とIPアドレスを書き換えてください
 
 # BGP経路を再度広報するためのコマンドを設定します
-allow_command = 'router bgp AS番号\n neighbor IPアドレス route-policy allow_traffic out\n'
+allow_command = 'router bgp AS番号\n neighbor IPアドレス route-policy allow_traffic out\n'#AS番号とIPアドレスを書き換えてください
 
 # トラフィックレートを監視するためのインターバルを設定します（秒単位）
 monitor_interval = 5
