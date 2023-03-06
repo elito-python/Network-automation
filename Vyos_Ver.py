@@ -4,7 +4,7 @@ import time
 # デバイス情報を設定します
 device = {
     'device_type': 'vyos',
-    'ip': '192.168.0.1',  # VyOSデバイスのIPアドレスに置き換えてください
+    'ip': 'IPアドレス',  # VyOSデバイスのIPアドレスに置き換えてください
     'username': 'username',  # ユーザー名に置き換えてください
     'password': 'password',  # パスワードに置き換えてください
 }
@@ -13,8 +13,8 @@ device = {
 show_interface_command = 'show interfaces ethernet eth0 | grep "RX rate\|TX rate"'
 
 # BGPネイバーのIPアドレスとAS番号を設定します
-neighbor_ip = '192.168.0.2'  # BGPネイバーのIPアドレスに置き換えてください
-neighbor_as = '65001'  # BGPネイバーのAS番号に置き換えてください
+neighbor_ip = 'IPアドレス'  # BGPネイバーのIPアドレスに置き換えてください
+neighbor_as = 'AS番号'  # BGPネイバーのAS番号に置き換えてください
 
 # 初期トラフィック値を設定します
 traffic_value = 0
