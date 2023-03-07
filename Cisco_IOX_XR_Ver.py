@@ -15,7 +15,7 @@ interface = "対象のPNIのIF"
 threshold = 100
 neighbor_ip = "IPアドレス"  #BGPネイバーのIPアドレスを書き換えてください
 neighbor_as = "AS番号"  #AS番号を書き換えてください
-route-policy = "ルートポリシ" #ルートポリシを書き換えてください
+route_policy = "ルートポリシ" #ルートポリシを書き換えてください
 
 # 経路の広報を停止する関数
 def stop_bgp_advertising():
@@ -23,7 +23,7 @@ def stop_bgp_advertising():
     net_connect.send_command("conf t")
     net_connect.send_command("router bgp " + neighbor_as)
     net_connect.send_command("address-family ipv4 unicast")
-    net_connect.send_command("neighbor " + neighbor_ip + " route-policy " + route-policy + " out")
+    net_connect.send_command("neighbor " + neighbor_ip + " route-policy " + route_policy + " out")
     net_connect.send_command("commit")
     net_connect.send_command("end")
     net_connect.disconnect()
@@ -34,7 +34,7 @@ def start_bgp_advertising():
     net_connect.send_command("conf t")
     net_connect.send_command("router bgp " + neighbor_as)
     net_connect.send_command("address-family ipv4 unicast")
-    net_connect.send_command("no neighbor " + neighbor_ip + " route-policy " + route-policy + " out")
+    net_connect.send_command("no neighbor " + neighbor_ip + " route-policy " + route_policy + " out")
     net_connect.send_command("commit")
     net_connect.send_command("end")
     net_connect.disconnect()
