@@ -31,12 +31,22 @@ def start_bgp_advertising():
     net_connect.send_command("no neighbor " + neighbor_ip + " route-map " + route-policy + " out")
     net_connect.disconnect()
 
+#show interfaces BExx | i rate
+  #30 second input rate 40690331000 bits/sec, 6554136 packets/sec
+  #30 second output rate 30269366000 bits/sec, 3587287 packets/sec
+    
 while True:
     # トラフィック量を取得
     net_connect = ConnectHandler(**device)
     output = net_connect.send_command("show interface " + interface + " | include rate")
     net_connect.disconnect()
-    traffic = int(output.split()[-2])
+    input = int(output.split()[4])
+    output = int(output.split()[-4])
+    
+    if input>output:
+        traffic = input
+    else:
+        traffic = output
     
     # トラフィックが閾値を超えている場合は経路広報を停止
     if traffic > threshold:
