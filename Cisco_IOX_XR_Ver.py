@@ -39,7 +39,7 @@ def start_bgp_advertising():
     net_connect.send_command("end")
     net_connect.disconnect()
 
-#show interfaces BE21 | i rate
+#show interfaces BExx | i rate
   #30 second input rate 40690331000 bits/sec, 6554136 packets/sec
   #30 second output rate 30269366000 bits/sec, 3587287 packets/sec
     
